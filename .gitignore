@@ -6,6 +6,7 @@ build/
 
 ### git ignore ###
 .env
+!**/terraform/**
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
