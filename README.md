@@ -2,7 +2,7 @@
 
 This is a **URL Shortener** built with **Kotlin**, deployed on **AWS Lambda**, and managed with **Terraform**.  
 It uses **DynamoDB** to store URLs and **API Gateway** to handle HTTP requests.
-
+![url_shortener.png](url_shortener.png)
 ---
 
 ## **🛠️ Technologies Used**
