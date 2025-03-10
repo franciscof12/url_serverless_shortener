@@ -3,6 +3,7 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest
 import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.RequestHandler
+import java.net.URL
 import java.util.UUID
 
 class ShortenUrlHandler : RequestHandler<Map<String, String>, Map<String, String>> {
@@ -38,7 +39,12 @@ class ShortenUrlHandler : RequestHandler<Map<String, String>, Map<String, String
     }
 
     private fun isValidUrl(url: String): Boolean {
-        return url.startsWith("http://") || url.startsWith("https://")
+        return try {
+            URL(url).toURI()
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
     private fun saveItemOnDynamoDB(item: Map<String, AttributeValue>) {
