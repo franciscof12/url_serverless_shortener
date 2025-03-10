@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "2.1.10"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "xyz.ragunath"
@@ -23,6 +24,17 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
 kotlin {
-    jvmToolchain(23)
+    jvmToolchain(17)
+}
+
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    archiveBaseName.set("url_shortener")
+    archiveClassifier.set("")
+    archiveVersion.set("")
+}
+
+tasks.build {
+    dependsOn(tasks.shadowJar)
 }
