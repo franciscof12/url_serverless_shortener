@@ -22,21 +22,29 @@ class ShortenUrlHandler : RequestHandler<Map<String, String>, Map<String, String
             "long_url" to AttributeValue(longUrl)
         )
 
-        dynamoDB.putItem(PutItemRequest().apply {
-            tableName = "url_shortener"
-            this.item = item
-        })
+        try {
+            saveItemOnDynamoDB(item)
+        } catch (e: Exception) {
+            return mapOf("error" to "Error saving to database: ${e.message}")
+        }
 
         val shortUrl = System.getenv("AWS_GATEWAY_BASE_URL") + shortId
 
         return mapOf("short_url" to shortUrl)
     }
 
+    private fun getRandomUUID(): String {
+        return UUID.randomUUID().toString().substring(0, 6)
+    }
+
     private fun isValidUrl(url: String): Boolean {
         return url.startsWith("http://") || url.startsWith("https://")
     }
 
-    private fun getRandomUUID(): String {
-        return UUID.randomUUID().toString().substring(0, 6)
+    private fun saveItemOnDynamoDB(item: Map<String, AttributeValue>) {
+        dynamoDB.putItem(PutItemRequest().apply {
+            tableName = "url_shortener"
+            this.item = item
+        })
     }
 }
