@@ -13,7 +13,6 @@ class RedirectUrlHandler : RequestHandler<Map<String, Any>, Map<String, Any>> {
     override fun handleRequest(input: Map<String, Any>, context: Context): Map<String, Any> {
         context.logger.log("🚀 [Lambda Start] Received input: $input")
 
-        // Extraer el shortId desde API Gateway
         val pathParams = input["pathParameters"] as? Map<String, String>
         val shortId = pathParams?.get("shortId") ?: return apiGatewayError(400, "Missing short_id", context)
 
