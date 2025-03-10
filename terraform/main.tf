@@ -142,8 +142,8 @@ resource "aws_lambda_function" "redirect_url" {
   handler       = "RedirectUrlHandler::handleRequest"
   role          = aws_iam_role.lambda_role.arn
 
-  filename = ".../build/libs/url_shortener.jar"
-  source_code_hash = filebase64sha256(".../build/libs/url_shortener.jar")
+  filename = "../build/libs/url_shortener.jar"
+  source_code_hash = filebase64sha256("../build/libs/url_shortener.jar")
 
   timeout = 10
   memory_size = 512
