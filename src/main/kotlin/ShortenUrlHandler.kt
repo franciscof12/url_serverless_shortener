@@ -3,17 +3,30 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest
 import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.RequestHandler
+import com.fasterxml.jackson.databind.ObjectMapper
 import java.net.URL
 import java.util.UUID
 
-class ShortenUrlHandler : RequestHandler<Map<String, String>, Map<String, String>> {
-    private val dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
+class ShortenUrlHandler : RequestHandler<Map<String, Any>, Map<String, String>> {
 
-    override fun handleRequest(input: Map<String, String>, context: Context): Map<String, String> {
-        val longUrl = input["long_url"] ?: return mapOf("error" to "Should provide long_url")
+    private val dynamoDB = AmazonDynamoDBClientBuilder.defaultClient()
+    private val objectMapper = ObjectMapper() // ObjectMapper para parsear el JSON de entrada
+
+    override fun handleRequest(input: Map<String, Any>, context: Context): Map<String, String> {
+        context.logger.log("Received input: $input")
+
+        val body = input["body"] as? String ?: return mapOf("error" to "Missing body")
+
+        val jsonBody: Map<String, String> = try {
+            objectMapper.readValue(body, Map::class.java) as Map<String, String>
+        } catch (e: Exception) {
+            return mapOf("error" to "Invalid JSON format: ${e.message}")
+        }
+
+        val longUrl = jsonBody["long_url"] ?: return mapOf("error" to "Missing 'long_url' field")
 
         if (!isValidUrl(longUrl)) {
-            return mapOf("error" to "Invalid URL")
+            return mapOf("error" to "Invalid URL format")
         }
 
         val shortId = getRandomUUID()
