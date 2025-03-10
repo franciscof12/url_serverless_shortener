@@ -10,6 +10,11 @@ class ShortenUrlHandler : RequestHandler<Map<String, String>, Map<String, String
 
     override fun handleRequest(input: Map<String, String>, context: Context): Map<String, String> {
         val longUrl = input["long_url"] ?: return mapOf("error" to "Should provide long_url")
+
+        if (!isValidUrl(longUrl)) {
+            return mapOf("error" to "Invalid URL")
+        }
+
         val shortId = getRandomUUID()
 
         val item = mapOf(
@@ -22,9 +27,13 @@ class ShortenUrlHandler : RequestHandler<Map<String, String>, Map<String, String
             this.item = item
         })
 
-        val shortUrl =  System.getenv("AWS_GATEWAY_BASE_URL") + shortId
+        val shortUrl = System.getenv("AWS_GATEWAY_BASE_URL") + shortId
 
         return mapOf("short_url" to shortUrl)
+    }
+
+    private fun isValidUrl(url: String): Boolean {
+        return url.startsWith("http://") || url.startsWith("https://")
     }
 
     private fun getRandomUUID(): String {
