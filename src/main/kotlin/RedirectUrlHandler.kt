@@ -11,17 +11,11 @@ class RedirectUrlHandler : RequestHandler<Map<String, Any>, Map<String, Any>> {
     private val objectMapper = ObjectMapper()
 
     override fun handleRequest(input: Map<String, Any>, context: Context): Map<String, Any> {
-        context.logger.log("🚀 [Lambda Start] Received input: $input")
-
         val pathParams = input["pathParameters"] as? Map<String, String>
-        val shortId = pathParams?.get("shortId") ?: return apiGatewayError(400, "Missing short_id", context)
-
-        context.logger.log("🔍 Looking up shortId: $shortId")
+        val shortId = pathParams?.get("shortId") ?: return apiGatewayError(400, "Missing short_id")
 
         val originalUrl = getOriginalUrlFromDynamoDB(shortId)
-            ?: return apiGatewayError(404, "URL not found", context)
-
-        context.logger.log("✅ Found original URL: $originalUrl")
+            ?: return apiGatewayError(404, "URL not found")
 
         return apiGatewayRedirect(originalUrl)
     }
@@ -48,8 +42,7 @@ class RedirectUrlHandler : RequestHandler<Map<String, Any>, Map<String, Any>> {
         )
     }
 
-    private fun apiGatewayError(statusCode: Int, message: String, context: Context): Map<String, Any> {
-        context.logger.log("❌ ERROR ($statusCode): $message")
+    private fun apiGatewayError(statusCode: Int, message: String): Map<String, Any> {
         return mapOf(
             "statusCode" to statusCode,
             "headers" to mapOf("Content-Type" to "application/json"),
