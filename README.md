@@ -1,8 +1,10 @@
-# 🚀 URL Shortener - Kotlin + AWS Lambda + Terraform
+# URL Shortener - Kotlin + AWS Lambda + Terraform
+
 This is a **URL Shortener** built with **Kotlin**, deployed on **AWS Lambda**, and managed with **Terraform**.  
 It uses **DynamoDB** to store URLs and **API Gateway** to handle HTTP requests.
 
 ![url_shortener.png](url_shortener.png)
+
 ---
 
 ## **🛠️ Technologies Used**
@@ -38,7 +40,7 @@ Before deploying, make sure you have:
 
 ### **2️⃣ Clone the Repository**
 ```sh
-git clone https://github.com/franciscof12/url_serverless_shortener
+git clone https://github.com/franciscof12/url_serverless_shortener.git
 cd url-shortener-kotlin
 ```
 
@@ -113,4 +115,3 @@ HTTP/2 302
 location: https://example.com
 ```
 ---
-🚀 **Now your URL Shortener is fully deployed!** 🎉
